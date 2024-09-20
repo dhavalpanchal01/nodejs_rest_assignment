@@ -13,21 +13,26 @@ const authenticateUser = async (
   const authHeader = req.header("Authorization");
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({ message: "Authorization token is required!" });
+    return res
+      .status(401)
+      .json({ message: "Authorization token is required!" });
   }
 
   const token = authHeader.split(" ")[1];
 
   try {
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET as string) as jwt.JwtPayload;
-    
+    const decodedToken = jwt.verify(
+      token,
+      process.env.JWT_SECRET as string
+    ) as jwt.JwtPayload;
+
     if (!decodedToken || !decodedToken.sub) {
       return res.status(401).json({ message: "Invalid token!" });
     }
 
     const _req = req as AuthRequest;
     _req.userId = decodedToken.sub;
-    
+
     next(); // Proceed to the next middleware
   } catch (error) {
     console.error("JWT Error:", error);
