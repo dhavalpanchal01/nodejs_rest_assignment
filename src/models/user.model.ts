@@ -2,6 +2,7 @@ import mongoose, { Schema } from "mongoose";
 import bcrypt from 'bcryptjs'
 
 export interface IUser extends Document {
+  _id: string;
   firstName: string,
   lastName?: string
   email: string;
@@ -12,7 +13,7 @@ export interface IUser extends Document {
   googleId?: string
   refreshToken?: string;
   tokenExpiry?: Date;
-  // comparePassword: (password: string) => Promise<boolean>;
+  comparePassword: (password: string) => Promise<boolean>;
 }
 
 const UserSchema: Schema<IUser> = new Schema(
@@ -31,7 +32,7 @@ const UserSchema: Schema<IUser> = new Schema(
     },
     password: { 
       type: String, 
-      required: true 
+      // required: true 
     },
     role: { 
       type: String, 
@@ -50,14 +51,13 @@ const UserSchema: Schema<IUser> = new Schema(
     },
     refreshToken: String,
     tokenExpiry: Date,
-    // comparePassword: (password) => Promise
   },
   { timestamps: true }
 );
 
 
 UserSchema.pre('save', async function (next) {
-    if(!this.isModified('password')) {
+    if(!this.password || !this.isModified('password')) {
         return next()
     }
     this.password = await bcrypt.hash(this.password, 12);

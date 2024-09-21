@@ -5,6 +5,9 @@ import connectDB from './src/config/connectDB';
 dotenv.config();
 
 
+console.log("Google Client ID:", process.env.GOOGLE_CLIENT_ID);
+
+
 const PORT: number = Number(process.env.PORT) || 3000
 
 const startServer = async () => {
