@@ -12,7 +12,7 @@ export interface IUser extends Document {
   googleId?: string
   refreshToken?: string;
   tokenExpiry?: Date;
-  // comparePassword: (password: string) => Promise<boolean>;
+  comparePassword: (password: string) => Promise<boolean>;
 }
 
 const UserSchema: Schema<IUser> = new Schema(

@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 import User from "../models/user.model";
+import jwt from 'jsonwebtoken';
 
 export const registerUser = async (
   req: Request,
@@ -41,7 +42,12 @@ export const loginUser = async (
 			return res.status(400).json({message: 'User not found!'});
 		}
 
-		// const isPasswordCorrect = await existingUser.comparePassword(password);
+		const isPasswordCorrect = await existingUser.comparePassword(password);
+
+    if(isPasswordCorrect) {
+      const token = jwt.sign({userId: existingUser._id, userEmail: existingUser.email}, process.env.JWT_SECRET as string)
+      return res.status(200).json({token: token})
+    }
 
 	} catch (error) {
 		
